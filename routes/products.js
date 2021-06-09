@@ -5,6 +5,9 @@ const Product = require('../models/Products');
 const router = express.Router();
 const multer = require('multer');
 const adminAuth = require('../middlewares/admin');
+const role = require('../middlewares/role');
+const merchantModel = require('../models/Merchant');
+const auth = require('../middlewares/auth');
 
 const { 
   
@@ -23,20 +26,12 @@ const storage = multer.diskStorage({
     );
   },
 });
-const auth = require('../middlewares/auth');
+
 
 //@routes Get /api/products
 //@desc Get all products
 //@access public
 
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
 
 router.get('/home', async (req, res) => {
   try {
@@ -51,7 +46,7 @@ router.get('/home', async (req, res) => {
 // @desc add product
 // @access private
 
-router.post('/', [auth, adminAuth], (req, res) => {
+router.post('/add',auth ,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), (req, res) => {
   const upload = multer({ storage: storage }).single('photo');
 
   upload(req, res, function (err) {
@@ -83,22 +78,22 @@ router.get('/:productId', async (req, res) => {
 //@desc delete  specific product
 //@access private
 
-router.delete('/:productId', [auth, adminAuth], async (req, res) => {
-  try {
-    const removedProduct = await Product.deleteOne({
-      _id: req.params.productId,
-    });
-    res.json(removedProduct);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
+// router.delete('/:productId',auth, role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), async (req, res) => {
+//   try {
+//     const removedProduct = await Product.deleteOne({
+//       _id: req.params.productId,
+//     });
+//     res.json(removedProduct);
+//   } catch (err) {
+//     res.json({ message: err });
+//   }
+// });
 
-//@routes Put /api/products/:productId
-//@desc update specific product
-//@access private
+// //@routes Put /api/products/:productId
+// //@desc update specific product
+// //@access private
 
-router.put('/:productId', [auth, adminAuth], async (req, res) => {
+router.put('/:productId',auth,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), async (req, res) => {
   try {
     const productfind = await Product.findById(req.params.productId);
     if (!productfind) {
@@ -118,16 +113,16 @@ router.put('/:productId', [auth, adminAuth], async (req, res) => {
   }
 });
 
-// search product by titile
-router.get('/title/:product', async (req, res, next) => {
-  const { params: { product } } = req;
-  try {
-    const products = await Product.find({ product }).exec();
-    res.json(products);
-  } catch (e) {
-    next(e);
-  }
-});
+// // search product by titile
+// router.get('/title/:product', async (req, res, next) => {
+//   const { params: { product } } = req;
+//   try {
+//     const products = await Product.find({ product }).exec();
+//     res.json(products);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
 
 
@@ -143,28 +138,76 @@ router.get('/title/:product', async (req, res, next) => {
 router.get('/search/:ser', auth, async (req, res, next) => {
   const { params: { ser } } = req;
   try {
-    const products = await searchcatTitle({ ser });
+    const products= await searchcatTitle({ ser });
     res.json(products);
   } catch (e) {
     next(e);
   }
 });
 
+// router.put(
+//   '/:productId/active',
+//   auth,
+//   role.checkRole(role.ROLES.Admin, role.ROLES.Merchant),
+//   async (req, res) => {
+//     try {
+//       // const productId = req.params.id;
+//       // const update = req.body.product;
+//       // const query = { _id: productId };
+
+//       await Product.findByIdAndUpdate(
+//         req.params.productId,
+
+//                req.body,
+//               { new: true }
+//       );
+
+//       res.status(200).json({
+//         success: true,
+//         message: 'Product has been updated successfully!'
+//       });
+//     } catch (error) {
+//       res.status(400).json({
+//         error: 'Your request could not be processed. Please try again.'
+//       });
+//     }
+//   }
+// );
+
+router.delete(
+  '/delete/:id',
+  auth,
+  role.checkRole(role.ROLES.Admin, role.ROLES.Merchant),
+  async (req, res) => {
+    try {
+      const product = await Product.deleteOne({ _id: req.params.id });
+
+      res.status(200).json({
+        success: true,
+        message: `Product has been deleted successfully!`,
+        product
+      });
+    } catch (error) {
+      res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// get all by titile
+router.get('/list/select', auth, async (req, res) => {
+  try {
+    const products = await Product.find({}, 'title');
+
+    res.status(200).json({
+      products
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
 module.exports = router;
-
-// route.post('/add', auth, async (req, res, next) => {
-//     console.log(req.user);
-//     const upload = multer({ storage: storage }).single("photo");
-
-//     upload(req, res, function (err) {
-//       console.log(req.user);
-//       const { body, user: { id } } = req;
-//       if (req.file != undefined)
-//         body.photo = req.file.path;
-//       createblog({ ...body, auther: id }).then(blog => res.json(blog)).catch(e => {
-//         console.log(e);
-//         next(e)
-//       });
-//     });
-//   });

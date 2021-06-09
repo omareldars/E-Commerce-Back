@@ -63,16 +63,16 @@ const userSchema = Schema({
       default: 'ROLE_MEMBER',
       enum: ['ROLE_MEMBER', 'ROLE_ADMIN','ROLE_MERCHANT']
     },
-    googleId: {
-      type: String,
-      unique: true,
-      required: false
-    },
-    facebookId: {
-      type: String,
-      unique: true,
-      required: false
-   }, 
+  //   googleId: {
+  //     type: String,
+  //     unique: true,
+  //     required: false
+  //   },
+  //   facebookId: {
+  //     type: String,
+  //     unique: true,
+  //     required: false
+  //  }, 
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
 },

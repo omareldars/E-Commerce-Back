@@ -58,7 +58,7 @@ router.get('/me', auth, async (req, res, next) => {
 
 // Edit your data
 
-router.patch('/edit', auth, async (req, res, next) => {
+router.put('/edit', auth, async (req, res, next) => {
   const {
     user: { id },
     body,
