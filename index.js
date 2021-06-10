@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRouter = require('./routes/user');
 const merchantRouter = require('./routes/merchant');
 const orderRouter = require('./routes/order');
+const categoryRouter = require('./routes/category');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,6 +60,8 @@ app.use('/users', userRouter);
 app.use('/merchants', merchantRouter);
 app.use('/api/products', require('./routes/products'));
 app.use('/orders', orderRouter);
+app.use('/categories', categoryRouter);
+
 
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');

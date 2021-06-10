@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-
-// Category Schema
-const CategorySchema =  mongoose.Schema({
+const Mongoose = require('mongoose');
+const { Schema } = Mongoose;
+const CategorySchema =  new Schema({
     _id: {
       type: Schema.ObjectId,
       auto: true
@@ -12,7 +11,7 @@ const CategorySchema =  mongoose.Schema({
     
     },
     image: {
-        type: String, required: true
+        type: String, required: false
     },
     description: {
       type: String,
