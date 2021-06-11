@@ -165,6 +165,15 @@ const createMerchantUser = async (email, name, merchant, host) => {
     //   await mailgun.sendEmail(email, 'merchant-welcome', null, name);
     //   const updated = await User.findOneAndUpdate(query, update, {new: true});
     //   const upda = await User.findOneAndUpdate(query, update);
+    const data = {
+      from: 'Cratf Maker <ekhlasgawish123@gmail.com>',
+      to: 'omar.a.eldars@gmail.com',
+      subject: 'Welcome',
+      text: 'Testing some Mailgun awesomness!'
+      };
+      await mg.messages().send(data, function (error, body) {
+        console.log(body);
+      });
       const updated  = await User.updateOne(query,{$set : {merchant:merchant, role: role.ROLES.Merchant}});
       console.log("updated---->",updated);
       return updated
