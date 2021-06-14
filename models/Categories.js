@@ -8,10 +8,6 @@ const CategorySchema =  new Schema({
     name: {
       type: String,
       trim: true
-    
-    },
-    image: {
-        type: String, required: false
     },
     description: {
       type: String,
@@ -21,12 +17,6 @@ const CategorySchema =  new Schema({
       type: Boolean,
       default: true
     },
-    products: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Products'
-      }
-    ],
     updated: Date,
     created: {
       type: Date,
