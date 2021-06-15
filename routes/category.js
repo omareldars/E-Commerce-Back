@@ -155,6 +155,7 @@ console.log("hhhhhhhhhhhhhhh",categoryDoc);
 
 
 router.put('/:categoryId',auth,role.checkRole(role.ROLES.Admin), async (req, res) => {
+  console.log("req-params---->",req.params);
     try {
       const categoryfind = await Category.findById(req.params.categoryId);
       if (!categoryfind) {

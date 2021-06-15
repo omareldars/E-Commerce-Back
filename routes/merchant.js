@@ -112,14 +112,13 @@ console.log(merchantDoc);
     }
   });
 
-// fetch all merchants api
-router.get(
-    '/list',
+  router.get(
+    '/list/approval',
     auth,
     role.checkRole(role.ROLES.Admin),
     async (req, res) => {
       try {
-        const merchants = await merchantModel.find({}).sort('-created');
+        const merchants = await merchantModel.find({status:"Waiting Approval"}).sort('-created');
 
         res.status(200).json({
           merchants
@@ -131,6 +130,30 @@ router.get(
       }
     }
   );
+
+
+
+// fetch all merchants api
+router.get(
+    '/list',
+    auth,
+    role.checkRole(role.ROLES.Admin),
+    async (req, res) => {
+      try {
+        const merchants = await merchantModel.find({status:"Approved"}).sort('-created');
+
+        res.status(200).json({
+          merchants
+        });
+      } catch (error) {
+        res.status(400).json({
+          error: 'Your request could not be processed. Please try again.'
+        });
+      }
+    }
+  );
+
+
 
 
 
@@ -200,43 +223,39 @@ const createMerchantUser = async (email, name, merchant, host) => {
     }
   }
 
+// approve merchant
+router.patch('/approve/:merchantId', auth, role.checkRole(role.ROLES.Admin),async (req, res) => {
+  try {
+    const merchantId = req.params.merchantId;
+    console.log("Id---->",merchantId);
+    const query = { _id: merchantId };
+    const update = {
+      status: 'Approved',
+      isActive: true
+    };
+    console.log("Query---->",merchantId);
+    const merchantDoc = await merchantModel.findOneAndUpdate(query, update, {
+      new: true
+    });
+    console.log("Host---->", req.headers.host);
+    console.log("from approve ---- this is merchant---->", merchantDoc);
+    await createMerchantUser(
+      merchantDoc.email,
+      merchantDoc.name,
+      merchantId,
+      req.headers.host
+    );
+    console.log("saba7o foll");
 
-
-  // approve merchant
-router.put('/approve/:merchantId', auth, async (req, res) => {
-    try {
-      const merchantId = req.params.merchantId;
-
-      const query = { _id: merchantId };
-      const update = {
-        status: 'Approved',
-        isActive: true
-      };
-
-      const merchantDoc = await merchantModel.findOneAndUpdate(query, update, {
-        new: true
-      });
-      console.log("Host---->", req.headers.host);
-      console.log("from approve ---- this is merchant---->", merchantDoc);
-      await createMerchantUser(
-        merchantDoc.email,
-        merchantDoc.name,
-        merchantId,
-        req.headers.host
-      );
-      console.log("saba7o foll");
-
-      res.status(200).json({
-        success: true
-      });
-    } catch (error) {
-      res.status(400).json({
-        error: 'Your request could not be processed. Please try again.'
-      });
-    }
-  });
-
-
+    res.status(200).json({
+      success: true
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
   // reject merchant
 router.put('/reject/:merchantId', auth, async (req, res) => {
