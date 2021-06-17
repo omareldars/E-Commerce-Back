@@ -5,6 +5,7 @@ const userRouter = require('./routes/user');
 const merchantRouter = require('./routes/merchant');
 const orderRouter = require('./routes/order');
 const categoryRouter = require('./routes/category');
+const cartRouter = require('./routes/cart');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,9 +18,9 @@ app.use(express.urlencoded());
 const corsOptions = {
   origin: 'http://localhost:4200',
   optionsSuccessStatus: 200,
-  credentials: true
+  credentials: true,
 };
-app.use(cors(corsOptions ));
+app.use(cors(corsOptions));
 app.use('/image', express.static('image'));
 
 // const app = express();
@@ -69,6 +70,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/orders', orderRouter);
 app.use('/categories', categoryRouter);
 
+app.use('/cart', cartRouter);
 
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');

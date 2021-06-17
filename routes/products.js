@@ -66,7 +66,7 @@ router.get('/profile', auth, async (req, res, next) => {
 
 router.post('/add',auth ,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), (req, res,next) => {
   const upload = multer({ storage: storage }).single('photo');
-
+  console.log("add product",req.body);
   upload(req, res, function (err) {
     const { body , user: { id } } = req;
     if (req.file != undefined) body.photo = req.file.path;
