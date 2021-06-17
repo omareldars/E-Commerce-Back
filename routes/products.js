@@ -9,6 +9,7 @@ const role = require('../middlewares/role');
 const merchantModel = require('../models/Merchant');
 const auth = require('../middlewares/auth');
 
+
 const { 
   
     searchcatTitle,
@@ -42,17 +43,34 @@ router.get('/home', async (req, res) => {
   }
 });
 
+
+//get your 
+router.get('/profile', auth, async (req, res, next) => {
+  const { user: { id } } = req;
+  try {
+    const products = await Product.find({ user: id });
+    console.log(products);
+    res.status(200).json({
+      products
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
 // @routes Post /api/products
 // @desc add product
 // @access private
 
-router.post('/add',auth ,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), (req, res) => {
+router.post('/add',auth ,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), (req, res,next) => {
   const upload = multer({ storage: storage }).single('photo');
 
   upload(req, res, function (err) {
-    const { body } = req;
+    const { body , user: { id } } = req;
     if (req.file != undefined) body.photo = req.file.path;
-    createProduct({ ...body })
+    createProduct({ ...body, user: id  })
       .then((product) => res.json(product))
       .catch((e) => {
         console.log(e);
@@ -61,9 +79,10 @@ router.post('/add',auth ,role.checkRole(role.ROLES.Admin, role.ROLES.Merchant), 
   });
 });
 
-//@routes Get /api/products/:productId
-//@desc Get  product by its id
-//@access public
+
+// @routes Get /api/products/:productId
+// @desc Get  product by its id
+// @access public
 
 router.get('/:productId', async (req, res) => {
   try {
@@ -210,4 +229,10 @@ router.get('/list/select', auth, async (req, res) => {
   }
 });
 
+
+
+
 module.exports = router;
+
+
+

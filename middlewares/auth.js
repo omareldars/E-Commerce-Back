@@ -3,6 +3,7 @@ const { nextTick } = require('process');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { Console } = require('console');
 
 // const config = require('config');
 
@@ -10,7 +11,8 @@ const asyncVerify = promisify(jwt.verify);
 
 const auth = async (req, res, next) => {
   const { headers: { authorization } } = req;
-  
+
+  console.log("token",authorization);
   if (!authorization) {
     next((new Error('UN_AUTHENTICATED')));
   }

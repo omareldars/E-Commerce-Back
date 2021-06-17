@@ -12,7 +12,14 @@ const PORT = process.env.PORT || 3000;
 //init middleware
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(cors());
+// app.use(cors());
+
+const corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200,
+  credentials: true
+};
+app.use(cors(corsOptions ));
 app.use('/image', express.static('image'));
 
 // const app = express();

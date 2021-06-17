@@ -23,6 +23,7 @@ const login = async ({ email, password }) => {
   const token = await asyncSign({
       email: user.email,
       id: user.id,
+      role: user.role
   }, 'SECRET_MUST_BE_COMPLEX', { expiresIn: '1d' });
   return { ...user.toJSON(), token };
 };
