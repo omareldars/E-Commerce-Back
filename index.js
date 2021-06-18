@@ -6,7 +6,7 @@ const merchantRouter = require('./routes/merchant');
 const orderRouter = require('./routes/order');
 const categoryRouter = require('./routes/category');
 const cartRouter = require('./routes/cart');
-
+const productsRouter = require('./routes/products');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -66,10 +66,9 @@ app.get('/', (req, res) => {
 
 app.use('/users', userRouter);
 app.use('/merchants', merchantRouter);
-app.use('/api/products', require('./routes/products'));
+app.use('/products', productsRouter);
 app.use('/orders', orderRouter);
 app.use('/categories', categoryRouter);
-
 app.use('/cart', cartRouter);
 
 app.get('/', function (req, res) {

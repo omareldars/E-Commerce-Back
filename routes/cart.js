@@ -78,6 +78,27 @@ router.delete('/delete/:cartId/:productId', auth, (req, res) => {
   });
 });
 
+// get cart by id
+router.get('/:cartId', async (req, res) => {
+  try {
+    const cartId = req.params.id;
+    console.log(cartId);
+    const CartDoc = await Cart.findOne({_id: cartId}).populate({path:'Products', name:'title'});
+    if (!CartDoc) {
+      return res.status(404).json({
+        message: 'No Cart found.'
+      });
+    }
+    res.status(200).json({
+      cart: CartDoc
+    });
+  } catch (e) {
+    res.status(400).json({
+      error: "There is no Cart found"
+    });
+  }
+});
+
 const decreaseQuantity = products => {
   let bulkOptions = products.map(item => {
     return {
