@@ -7,6 +7,8 @@ const orderRouter = require('./routes/order');
 const categoryRouter = require('./routes/category');
 const cartRouter = require('./routes/cart');
 const productsRouter = require('./routes/products');
+const reviewRouter = require('./routes/review');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -70,6 +72,7 @@ app.use('/products', productsRouter);
 app.use('/orders', orderRouter);
 app.use('/categories', categoryRouter);
 app.use('/cart', cartRouter);
+app.use('/review', reviewRouter);
 
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');
