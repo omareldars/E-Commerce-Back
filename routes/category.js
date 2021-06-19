@@ -26,7 +26,7 @@ router.post('/add', auth, role.checkRole(role.ROLES.Admin), (req, res) => {
     isActive
   });
 console.log("hhhhhhhhhhhhhhhhhh",category );
- 
+
   category.save((err, data) => {
     if (err) {
         console.log("---->",err);
@@ -75,17 +75,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const categoryId = req.params.id;
-
-    console.log("hhhhhhhhhhhhhhh",categoryId);
-
     const categoryDoc = await Category.findOne({_id: categoryId}).populate({path:'Products', name:'title'});
-    console.log("ccccccccccccccccccccccc",categoryDoc);
     if (!categoryDoc) {
       return res.status(404).json({
         message: 'No Category found.'
       });
     }
-console.log("hhhhhhhhhhhhhhh",categoryDoc);
     res.status(200).json({
       category: categoryDoc
     });
@@ -163,7 +158,7 @@ router.put('/:categoryId',auth,role.checkRole(role.ROLES.Admin), async (req, res
       }
       const categoryUpdate = await Category.findByIdAndUpdate(
         req.params.categoryId,
-  
+
         req.body,
         { new: true }
       );

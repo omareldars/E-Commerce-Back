@@ -5,7 +5,8 @@ const userRouter = require('./routes/user');
 const merchantRouter = require('./routes/merchant');
 const orderRouter = require('./routes/order');
 const categoryRouter = require('./routes/category');
-
+const cartRouter = require('./routes/cart');
+const productsRouter = require('./routes/products');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -17,14 +18,14 @@ app.use(express.urlencoded());
 const corsOptions = {
   origin: 'http://localhost:4200',
   optionsSuccessStatus: 200,
-  credentials: true
+  credentials: true,
 };
-app.use(cors(corsOptions ));
+app.use(cors(corsOptions));
 app.use('/image', express.static('image'));
 
 // const app = express();
 mongoose
-  .connect('mongodb://localhost:27017/angular', { useUnifiedTopology: true })
+  .connect('mongodb://localhost:27017/ecommerce', { useUnifiedTopology: true })
   .then(() => {
     console.log('connect mongodb successfully');
   })
@@ -65,10 +66,10 @@ app.get('/', (req, res) => {
 
 app.use('/users', userRouter);
 app.use('/merchants', merchantRouter);
-app.use('/api/products', require('./routes/products'));
+app.use('/products', productsRouter);
 app.use('/orders', orderRouter);
 app.use('/categories', categoryRouter);
-
+app.use('/cart', cartRouter);
 
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');

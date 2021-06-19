@@ -9,7 +9,23 @@ const crypto = require('crypto');
 const mailgun = require("mailgun-js");
 const DOMAIN = "https://api.mailgun.net/v3/sandbox7388420c7cdc4cabb89eea66bcfb55d9.mailgun.org";
 const mg = mailgun({apiKey: "0ddc7e1e5c34690ea341ac93722288e5-90ac0eb7-0b0bbb44", domain: DOMAIN});
-
+const nodemailer = require('nodemailer');
+const xoauth2 = require('xoauth2');
+const mail = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: true,
+  requireTLS: true,
+  auth: {
+    xoauth2: xoauth2.createXOAuth2Generator({
+      user: 'english.iti41@gmail.com',
+      clientId: '1008092525780-0v5ctcelq61dpgd79nbfont6eqp25le9.apps.googleusercontent.com',
+      clientSecret: 'cNR9DelAdiNyQ4X33nHTd10u',
+      refreshToken: '1//04PdYqR3yElAaCgYIARAAGAQSNwF-L9Irn2b2kuBCTfy1RmssYJexD_347NPWb9T3yJpX-C-anFj61WiLrItgzHJZH0DMXqsCOWs'
+      // pass: 'osintake41iti'
+    })
+  }
+});
 const {
   create,
 
@@ -176,30 +192,38 @@ const createMerchantUser = async (email, name, merchant, host) => {
       });
   console.log("merchantDoc---->",merchantDoc);
     //   await createMerchantBrand(merchantDoc);
-    // const data = {
-    //     from: "Cratf Maker <ekhlasgawish123@gmail.com>",
-    //     to: "omar.a.eldars@gmail.com",
-    //     subject: "Welcome",
-    //     text: "Testing some Mailgun awesomness!"
-    // };
+    const data = {
+        from: 'Crafts Maker <english.iti41@gmail.com>',
+        to: 'omar.a.eldars@gmail.com',
+        subject: 'Welcome',
+        text: 'Testing some Mailgun awesomness!'
+    };
+    await mail.sendMail(data, function (error, info){
+      if(error){
+        console.log("Error------>",error);
+      } else {
+        console.log("Email Sent------>",info.response);
+      }
+    });
     //   await mg.messages().send(data, function (error, body) {
-    //     console.log(body);
+    //     console.log("Body------>",body);
+    //     console.log("Error------>",error);
     // });
     //   await mailgun.sendEmail(email, 'merchant-welcome', null, name);
     //   const updated = await User.findOneAndUpdate(query, update, {new: true});
     //   const upda = await User.findOneAndUpdate(query, update);
-    const data = {
-      from: 'Cratf Maker <ekhlasgawish123@gmail.com>',
-      to: 'omar.a.eldars@gmail.com',
-      subject: 'Welcome',
-      text: 'Testing some Mailgun awesomness!'
-      };
-      await mg.messages().send(data, function (error, body) {
-        console.log(body);
-      });
+    // const data = {
+    //   from: 'Cratf Maker <ekhlasgawish123@gmail.com>',
+    //   to: 'omar.a.eldars@gmail.com',
+    //   subject: 'Welcome',
+    //   text: 'Testing some Mailgun awesomness!'
+    //   };
+    //   await mg.messages().send(data, function (error, body) {
+    //     console.log(body);
+    //   });
       const updated  = await User.updateOne(query,{$set : {merchant:merchant, role: role.ROLES.Merchant}});
       console.log("updated---->",updated);
-      return updated
+      return await User.updateOne(query,{$set : {merchant:merchant, role: role.ROLES.Merchant}});
     } else {
       const buffer = await crypto.randomBytes(48);
       const resetToken = buffer.toString('hex');
