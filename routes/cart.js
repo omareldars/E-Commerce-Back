@@ -23,7 +23,9 @@ router.post('/add', auth, (req, res) => {
         error: 'Your request could not be processed. Please try again.',
       });
     }
+    if (products){
     decreaseQuantity(products);
+    }
     res.status(200).json({
       success: true,
       cartId: data.id,
@@ -78,26 +80,37 @@ router.delete('/delete/:cartId/:productId', auth, (req, res) => {
   });
 });
 
-// get cart by id
+
+//get cart by id 
 router.get('/:cartId', async (req, res) => {
   try {
-    const cartId = req.params.id;
-    console.log(cartId);
-    const CartDoc = await Cart.findOne({_id: cartId}).populate({path:'Products', name:'title'});
-    if (!CartDoc) {
-      return res.status(404).json({
-        message: 'No Cart found.'
-      });
-    }
-    res.status(200).json({
-      cart: CartDoc
-    });
-  } catch (e) {
-    res.status(400).json({
-      error: "There is no Cart found"
-    });
+    const cart= await Cart.findById(req.params.cartId);
+    res.json(cart);
+  } catch (err) {
+    res.json({ message: err });
   }
 });
+
+// // get cart by id
+// router.get('/:cartId', async (req, res) => {
+//   try {
+//     const cartId = req.params.id;
+//     console.log(cartId);
+//     const CartDoc = await Cart.findOne({_id: cartId}).populate({path:'Products', name:'title'});
+//     if (!CartDoc) {
+//       return res.status(404).json({
+//         message: 'No Cart found.'
+//       });
+//     }
+//     res.status(200).json({
+//       cart: CartDoc
+//     });
+//   } catch (e) {
+//     res.status(400).json({
+//       error: "There is no Cart found"
+//     });
+//   }
+// });
 
 const decreaseQuantity = products => {
   let bulkOptions = products.map(item => {
