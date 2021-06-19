@@ -49,6 +49,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+//get review by id 
+router.get('/:id', async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.id);
+    res.json(review);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
 router.put('/:id', auth, async (req, res) => {
   try {
     const reviewId = req.params.id;
