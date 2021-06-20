@@ -63,6 +63,11 @@ const userSchema = Schema({
       default: 'ROLE_MEMBER',
       enum: ['ROLE_MEMBER', 'ROLE_ADMIN','ROLE_MERCHANT']
     },
+    created: {
+      type: Date,
+      default: Date.now
+    },
+    
   //   googleId: {
   //     type: String,
   //     unique: true,

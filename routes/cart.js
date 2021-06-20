@@ -7,9 +7,7 @@ const Product = require('../models/Products');
 router.post('/add', auth, (req, res) => {
   // console.log('Order Request', req);
   //   const user = req.user.id;
-
     const products = req.body.products;
-
   // const { body ,} = req;
   // lets give it a try at first
   const {body, user: { id },} = req;
@@ -32,6 +30,7 @@ router.post('/add', auth, (req, res) => {
     });
   });
 });
+
 // delete cart
 router.delete('/delete/:cartId', auth, (req, res) => {
   Cart.deleteOne({ _id: req.params.cartId }, (err) => {
@@ -50,8 +49,8 @@ router.delete('/delete/:cartId', auth, (req, res) => {
 router.post('/add/:cartId', auth, (req, res) => {
   console.log("from add to cart req--->",req);
   const product = req.body.product;
+  // const query = { _id: "60cf7de31e5f1f2ec8ba30ba" }; //req.params.cartId
   const query = { _id: req.params.cartId };
-
   Cart.updateOne(query, { $push: { products: product } }).exec(err => {
     if (err) {
       return res.status(400).json({
@@ -107,6 +106,39 @@ router.get('/:cartId', async (req, res) => {
     res.json(cart);
   } catch (err) {
     res.json({ message: err });
+  }
+});
+
+
+
+// get all carts
+router.get('/', async (req, res) => {
+  try {
+    const carts = await Cart.find({});
+    res.status(200).json({
+      carts
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+
+// get user cart
+router.get('/mycart', auth, async (req, res, next) => {
+  const { user: { id } } = req;
+  try {
+    const carts= await Cart.find({ user: id });
+    console.log(carts);
+    res.status(200).json({
+      carts
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
 });
 
