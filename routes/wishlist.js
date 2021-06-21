@@ -45,6 +45,10 @@ router.post('/', auth, async (req, res) => {
       error: 'Your request could not be processed. Please try again.',
     });
   }
+
+  if (err) {
+    console.log(err);
+  }
 });
 // fetch wishlist api
 router.get('/', auth, async (req, res) => {
