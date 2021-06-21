@@ -48,27 +48,48 @@ router.post('/', auth, async (req, res) => {
 });
 // fetch wishlist api
 router.get('/', auth, async (req, res) => {
-    try {
-      const user = req.user._id;
-  
-      const wishlist = await Wishlist.find({ user, isLiked: true })
-        .populate({
-          path: 'Products',
-          select: 'title description price photo',
-        })
-        .sort('-updated');
-  
-      res.status(200).json({
-        wishlist,
-      });
-    } catch (error) {
-      res.status(400).json({
-        error: 'Your request could not be processed. Please try again.',
-      });
-    }
-  });
-  
-  
-  
+  try {
+    const user = req.user._id;
+
+    const wishlist = await Wishlist.find({ user, isLiked: true })
+      .populate({
+        path: 'Products',
+        select: 'title description price photo',
+      })
+      .sort('-updated');
+
+    res.status(200).json({
+      wishlist,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',
+    });
+  }
+});
+//delete wishlist
+router.delete('/unlike/:id', auth, async (req, res) => {
+  try {
+    const { product, isLiked } = req.body;
+    const user = req.user;
+    const update = {
+      product,
+      isLiked,
+      updated: Date.now(),
+    };
+    const query = { product: req.params.id, user: user._id };
+
+    const deletedWishlist = await Wishlist.deleteOne(query);
+    res.status(200).json({
+      success: true,
+      message: `wishlist has been deleted successfully!`,
+      deletedWishlist,
+    });
+  } catch (e) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',
+    });
+  }
+});
 
 module.exports = router;
