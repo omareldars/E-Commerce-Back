@@ -46,6 +46,29 @@ router.post('/', auth, async (req, res) => {
     });
   }
 });
-
+// fetch wishlist api
+router.get('/', auth, async (req, res) => {
+    try {
+      const user = req.user._id;
+  
+      const wishlist = await Wishlist.find({ user, isLiked: true })
+        .populate({
+          path: 'Products',
+          select: 'title description price photo',
+        })
+        .sort('-updated');
+  
+      res.status(200).json({
+        wishlist,
+      });
+    } catch (error) {
+      res.status(400).json({
+        error: 'Your request could not be processed. Please try again.',
+      });
+    }
+  });
+  
+  
+  
 
 module.exports = router;
