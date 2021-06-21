@@ -33,13 +33,13 @@ const userSchema = Schema({
         maxLength: 140,
         required: true
     },
-  
+
     city:{
         type: String,
         maxLength: 140,
         required: true
     },
-    
+
     country:{
         type: String,
         maxLength: 140,
@@ -63,20 +63,15 @@ const userSchema = Schema({
       default: 'ROLE_MEMBER',
       enum: ['ROLE_MEMBER', 'ROLE_ADMIN','ROLE_MERCHANT']
     },
-  //   googleId: {
-  //     type: String,
-  //     unique: true,
-  //     required: false
-  //   },
-  //   facebookId: {
-  //     type: String,
-  //     unique: true,
-  //     required: false
-  //  }, 
+    created: {
+      type: Date,
+      default: Date.now
+    },
+
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
 },
- 
+
 {
   toJSON: {
     transform: (doc, ret, options) => {
@@ -86,12 +81,12 @@ const userSchema = Schema({
   },
 });
 
-//hash password 
+//hash password
 userSchema.pre('save', function preSave(next) {
     this.password = bcrypt.hashSync(this.password, 8);
     next();
   });
-  
+
  userSchema.pre('findOneAndUpdate', function preSave(next) {
     if (!this._update.password) {
       return;
@@ -99,7 +94,7 @@ userSchema.pre('save', function preSave(next) {
     this._update.password = bcrypt.hashSync(this._update.password, 8);
     next();
   });
- //to check password is found or no  
+ //to check password is found or no
 userSchema.methods.validatePassword = function validatePassword(password) {
     return bcrypt.compareSync(password, this.password);
   };

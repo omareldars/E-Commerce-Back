@@ -1,5 +1,5 @@
 const express = require('express');
-
+const role = require('../middlewares/role');
 const userModel = require('../models/User');
 var passport = require('passport');
 const {
@@ -18,6 +18,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
   const { body } = req;
+  console.log("body from register", body);
   try {
     const user = await create(body);
     res.json(user);
@@ -36,7 +37,7 @@ router.post('/login', async (req, res, next) => {
     next(e);
   }
 });
-router.get('/', async (req, res, next) => {
+router.get('/list', async (req, res, next) => {
   try {
     const users = await getAll();
     res.json(users);
@@ -72,17 +73,17 @@ router.put('/edit', auth, async (req, res, next) => {
 });
 
 // Remove your account
-router.delete('/remove', auth, async (req, res, next) => {
-  const {
-    user: { id },
-  } = req;
-  try {
-    const users = await deletefield(id);
-    res.send('Delete done ');
-  } catch (e) {
-    next(e);
-  }
-});
+// router.delete('/remove', auth, async (req, res, next) => {
+//   const {
+//     user: { id },
+//   } = req;
+//   try {
+//     const users = await deletefield(id);
+//     res.send('Delete done ');
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
 //serch by id
 router.get('/search/:_id', auth, async (req, res, next) => {
@@ -110,5 +111,30 @@ router.get('/name/:username', auth, async (req, res, next) => {
     next(e);
   }
 });
+
+
+
+router.delete(
+  '/delete/:id',
+  auth,
+  role.checkRole(role.ROLES.Admin),
+  async (req, res) => {
+    console.log("req params from delete user------>",req.params.id);
+    try {
+
+      const user = await userModel.deleteOne({ _id: req.params.id});
+      console.log("Request from delete user----->",user);
+      res.status(200).json({
+        success: true,
+        message: `User has been deleted successfully!`,
+        user
+      });
+    } catch (error) {
+      res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
 
 module.exports = router;

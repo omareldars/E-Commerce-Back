@@ -7,8 +7,9 @@ const Product = require('../models/Products');
 const auth = require('../middlewares/auth');
 
 router.post('/add', auth, (req, res) => {
-  const user = req.user;
 
+  const user = req.user;
+  console.log("user inside review--->",user);
   const review = new Review(Object.assign(req.body, { user: user._id }));
 
   review.save((err, data) => {
