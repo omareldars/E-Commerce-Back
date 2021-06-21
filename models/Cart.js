@@ -26,7 +26,7 @@ module.exports = Mongoose.model('CartItem', CartItemSchema);
 
 // Cart Schema
 const CartSchema = new Schema({
-  products: [CartItemSchema],
+  products:[CartItemSchema],
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
