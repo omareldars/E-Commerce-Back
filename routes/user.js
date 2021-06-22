@@ -1,5 +1,5 @@
-const express = require('express');
-
+ const express = require('express');
+ const Cart = require('../models/Cart');
 const userModel = require('../models/User');
 var passport = require('passport');
 const {
@@ -18,9 +18,35 @@ const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
   const { body } = req;
+  console.log("hhhhhhhhhhhhhh",body);
   try {
     const user = await create(body);
-    res.json(user);
+    // res.json(user);
+    // res.status(200).redirect( 'http://localhost:3000/cart/add')
+    // const products = req.body.products;
+
+    // const { body ,} = req;
+    // lets give it a try at first
+    // const { user: { id },} = req;
+    const cart = new Cart({ user: user.id,});
+    // console.log("body---->",body);
+    // console.log("req.body--->",req.body.products);
+    // console.log("cart--->",cart);
+    cart.save((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Your request could not be processed. Please try again.',
+        });
+      }
+      // if (products){
+      // decreaseQuantity(products);
+      // }
+      res.status(200).json({
+        success: true,
+        message: "User and his cart created successfully.",
+        cartId: data.id,
+      });
+    });
   } catch (e) {
     next(e);
   }

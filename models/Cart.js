@@ -5,9 +5,12 @@ const { Schema } = Mongoose;
 const CartItemSchema = new Schema({
   product: {
     type: Schema.Types.ObjectId,
-    ref: 'Product'
+    ref: 'Products'
   },
-  quantity: Number,
+  quantity:{
+    type:Number,
+    default: 1,
+  } ,
   totalPrice: {
     type: Number
   },

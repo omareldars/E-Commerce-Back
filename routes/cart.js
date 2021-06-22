@@ -4,11 +4,11 @@ const Cart = require('../models/Cart');
 const auth = require('../middlewares/auth');
 const Product = require('../models/Products');
 // add cart
-router.post('/add', auth, (req, res) => {
+router.post('/add', (req, res) => {
   // console.log('Order Request', req);
   //   const user = req.user.id;
 
-    const products = req.body.products;
+  const products = req.body.products;
 
   // const { body ,} = req;
   // lets give it a try at first
@@ -48,10 +48,10 @@ router.delete('/delete/:cartId', auth, (req, res) => {
 
 // add item to cart 
 router.post('/add/:cartId', auth, (req, res) => {
-  console.log("from add to cart req--->",req);
-  const product = req.body.product;
-  const query = { _id: req.params.cartId };
 
+  const product = req.body.products;
+  const query = { _id: req.params.cartId };
+  console.log("ggggggggggggggggggggggggggggg",product);
   Cart.updateOne(query, { $push: { products: product } }).exec(err => {
     if (err) {
       return res.status(400).json({
@@ -59,8 +59,10 @@ router.post('/add/:cartId', auth, (req, res) => {
       });
     }
     res.status(200).json({
+    
       success: true
     });
+    // console.log("from add to cart res--->",Cart);
   });
 });
 // delete item from cart
@@ -100,6 +102,23 @@ router.delete('/delete/:cartId/:productId', auth, (req, res) => {
 //     });
 //   }
 // });
+
+router.get('/mycart', auth, async (req, res, next) => {
+  const { user: { id } } = req;
+  try {
+    const carts= await Cart.find({ user: id });
+    const cartID = carts[0]._id;
+    console.log(carts[0]._id);
+    res.status(200).json({
+      cartID
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
 //get cart by id 
 router.get('/:cartId', async (req, res) => {
   try {
@@ -144,7 +163,18 @@ const decreaseQuantity = products => {
   Product.bulkWrite(bulkOptions);
 };
 
-
+router.get('/', async (req, res) => {
+  try {
+    const carts = await Cart.find({});
+    res.status(200).json({
+      carts
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
 
 module.exports = router;
