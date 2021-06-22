@@ -5,6 +5,25 @@ const auth = require('../middlewares/auth');
 const Product = require('../models/Products');
 
 
+
+// get user cart
+router.get('/usercart', auth, async (req, res, next) => {
+  const { user: { id } } = req;
+  try {
+    const carts= await Cart.find({ user: id });
+    console.log(carts);
+    res.status(200).json({
+      carts
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+
+
 router.get('/mycart', auth, async (req, res, next) => {
   const { user: { id } } = req;
   try {
@@ -103,6 +122,7 @@ router.delete('/delete/:cartId', auth, (req, res) => {
 // delete item from cart
 router.delete('/delete/:cartId/:productId', auth, (req, res) => {
   const product = { product: req.params.productId };
+  console.log("pro-id-->",req.params);
   const query = { _id: req.params.cartId };
 
   Cart.updateOne(query, { $pull: { products: product } }).exec(err => {
@@ -167,21 +187,7 @@ router.get('/', async (req, res) => {
 });
 
 
-// // get user cart
-// router.get('/usercart', auth, async (req, res, next) => {
-//   const { user: { id } } = req;
-//   try {
-//     const carts= await Cart.find({ user: id });
-//     console.log(carts);
-//     res.status(200).json({
-//       carts
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       error: 'Your request could not be processed. Please try again.'
-//     });
-//   }
-// });
+
 
 // // get cart by id
 // router.get('/:cartId', async (req, res) => {
