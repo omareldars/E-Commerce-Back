@@ -132,16 +132,16 @@ router.put('/:productId',auth,role.checkRole(role.ROLES.Admin, role.ROLES.Mercha
   }
 });
 
-// // search product by titile
-// router.get('/title/:product', async (req, res, next) => {
-//   const { params: { product } } = req;
-//   try {
-//     const products = await Product.find({ product }).exec();
-//     res.json(products);
-//   } catch (e) {
-//     next(e);
-//   }
-// });
+// search product by titile
+router.get('/title/:product', async (req, res, next) => {
+  const product = req.params.product;
+  try {
+    const products = await Product.find({title: new RegExp(product,"m")}).exec();
+    res.json(products);
+  } catch (e) {
+    next(e);
+  }
+});
 
 
 
@@ -154,15 +154,15 @@ router.put('/:productId',auth,role.checkRole(role.ROLES.Admin, role.ROLES.Mercha
 //     next(e);
 //   }
 // });//search 
-router.get('/search/:ser', auth, async (req, res, next) => {
-  const { params: { ser } } = req;
-  try {
-    const products= await searchcatTitle({ ser });
-    res.json(products);
-  } catch (e) {
-    next(e);
-  }
-});
+// router.get('/search/:ser', auth, async (req, res, next) => {
+//   const { params: { ser } } = req;
+//   try {
+//     const products= await searchcatTitle({ ser });
+//     res.json(products);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
 // router.put(
 //   '/:productId/active',
