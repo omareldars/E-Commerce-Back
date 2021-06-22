@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const store = require('../helpers/store')
-
+const Product =require('../models/Products')
 // Bring in Models & Helpers
 const Category = require('../models/Categories');
 const auth = require('../middlewares/auth');
@@ -71,6 +71,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+//fetch product by category 
+router.get('/products/:id', async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const categoryDoc = await Product.find({category: categoryId});
+    if (!categoryDoc) {
+      return res.status(404).json({
+        message: 'No Category found.'
+      });
+    }
+    res.status(200).json({
+      category: categoryDoc
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+
 // fetch category api by id
 router.get('/:id', async (req, res) => {
   try {
@@ -90,6 +112,8 @@ router.get('/:id', async (req, res) => {
     });
   }
 });
+
+
 
 // router.put('/:id', auth, role.checkRole(role.ROLES.Admin), async (req, res) => {
 //   try {

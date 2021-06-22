@@ -132,7 +132,7 @@ router.put('/:productId',auth,role.checkRole(role.ROLES.Admin, role.ROLES.Mercha
   }
 });
 
-// search product by titile
+// search product by title
 router.get('/title/:product', async (req, res, next) => {
   const product = req.params.product;
   try {
@@ -153,8 +153,10 @@ router.get('/title/:product', async (req, res, next) => {
 //   } catch (e) {
 //     next(e);
 //   }
-// });//search 
-// router.get('/search/:ser', auth, async (req, res, next) => {
+// });
+
+//search 
+// router.get('/search/:ser', async (req, res, next) => {
 //   const { params: { ser } } = req;
 //   try {
 //     const products= await searchcatTitle({ ser });
