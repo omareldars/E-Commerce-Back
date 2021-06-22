@@ -9,6 +9,7 @@ const cartRouter = require('./routes/cart');
 const productsRouter = require('./routes/products');
 const reviewRouter = require('./routes/review');
 const contactRouter = require('./routes/contact');
+const wishlistRouter = require('./routes/wishlist');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -27,7 +28,7 @@ app.use('/image', express.static('image'));
 
 // const app = express();
 mongoose
-  .connect('mongodb://localhost:27017/angular', { useUnifiedTopology: true })
+  .connect('mongodb://localhost:27017/ecommerce', { useUnifiedTopology: true })
   .then(() => {
     console.log('connect mongodb successfully');
   })
@@ -74,6 +75,8 @@ app.use('/categories', categoryRouter);
 app.use('/cart', cartRouter);
 app.use('/review', reviewRouter);
 app.use('/contact', contactRouter);
+app.use('/wishlist', wishlistRouter);
+
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');
 });
