@@ -3,6 +3,46 @@ const router = express.Router();
 const Cart = require('../models/Cart');
 const auth = require('../middlewares/auth');
 const Product = require('../models/Products');
+
+
+router.get('/mycart', auth, async (req, res, next) => {
+  const { user: { id } } = req;
+  try {
+    const carts= await Cart.find({ user: id });
+    const cartID = carts[0]._id;
+    console.log(carts[0]._id);
+    res.status(200).json({
+      cartID
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+
+
+
+// add item to cart 
+router.post('/add/:cartId', auth, (req, res) => {
+
+  const product = req.body.products;
+  const query = { _id: req.params.cartId };
+  console.log("ggggggggggggggggggggggggggggg",product);
+  Cart.updateOne(query, { $push: { products: product } }).exec(err => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+    res.status(200).json({
+    
+      success: true
+    });
+    // console.log("from add to cart res--->",Cart);
+  });
+});
 // add cart
 router.post('/add', (req, res) => {
   // console.log('Order Request', req);
@@ -59,25 +99,7 @@ router.delete('/delete/:cartId', auth, (req, res) => {
   });
 });
 
-// add item to cart 
-router.post('/add/:cartId', auth, (req, res) => {
 
-  const product = req.body.products;
-  const query = { _id: req.params.cartId };
-  console.log("ggggggggggggggggggggggggggggg",product);
-  Cart.updateOne(query, { $push: { products: product } }).exec(err => {
-    if (err) {
-      return res.status(400).json({
-        error: 'Your request could not be processed. Please try again.'
-      });
-    }
-    res.status(200).json({
-    
-      success: true
-    });
-    // console.log("from add to cart res--->",Cart);
-  });
-});
 // delete item from cart
 router.delete('/delete/:cartId/:productId', auth, (req, res) => {
   const product = { product: req.params.productId };
@@ -116,21 +138,7 @@ router.delete('/delete/:cartId/:productId', auth, (req, res) => {
 //   }
 // });
 
-router.get('/mycart', auth, async (req, res, next) => {
-  const { user: { id } } = req;
-  try {
-    const carts= await Cart.find({ user: id });
-    const cartID = carts[0]._id;
-    console.log(carts[0]._id);
-    res.status(200).json({
-      cartID
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
-    });
-  }
-});
+
 
 //get cart by id 
 router.get('/:cartId', async (req, res) => {
@@ -159,21 +167,21 @@ router.get('/', async (req, res) => {
 });
 
 
-// get user cart
-router.get('/usercart', auth, async (req, res, next) => {
-  const { user: { id } } = req;
-  try {
-    const carts= await Cart.find({ user: id });
-    console.log(carts);
-    res.status(200).json({
-      carts
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
-    });
-  }
-});
+// // get user cart
+// router.get('/usercart', auth, async (req, res, next) => {
+//   const { user: { id } } = req;
+//   try {
+//     const carts= await Cart.find({ user: id });
+//     console.log(carts);
+//     res.status(200).json({
+//       carts
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       error: 'Your request could not be processed. Please try again.'
+//     });
+//   }
+// });
 
 // // get cart by id
 // router.get('/:cartId', async (req, res) => {
