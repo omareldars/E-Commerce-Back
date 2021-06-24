@@ -28,7 +28,7 @@ app.use('/image', express.static('image'));
 
 // const app = express();
 mongoose
-  .connect('mongodb://localhost:27017/ecommerce', { useUnifiedTopology: true })
+  .connect('mongodb://localhost:27017/angular', { useUnifiedTopology: true })
   .then(() => {
     console.log('connect mongodb successfully');
   })

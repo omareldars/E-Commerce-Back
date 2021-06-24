@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const Wishlist = require('../models/wishlist');
+const Products = require('../models/Products');
+
 const auth = require('../middlewares/auth');
 
 router.post('/', auth, async (req, res) => {
@@ -51,13 +53,18 @@ router.post('/', auth, async (req, res) => {
   }
 });
 // fetch wishlist api
+
+// router.get('/',auth,async function(req,res){
+//   const user = req.user._id;
+// Wishlist.find({ user, isLiked: true })
+// })
 router.get('/', auth, async (req, res) => {
   try {
     const user = req.user._id;
 
     const wishlist = await Wishlist.find({ user, isLiked: true })
       .populate({
-        path: 'Products',
+        path: 'product',
         select: 'title description price photo',
       })
       .sort('-updated');
@@ -69,6 +76,10 @@ router.get('/', auth, async (req, res) => {
     res.status(400).json({
       error: 'Your request could not be processed. Please try again.',
     });
+  }
+
+  if (err) {
+    console.log(err);
   }
 });
 //delete wishlist
