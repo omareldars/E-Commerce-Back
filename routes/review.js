@@ -178,10 +178,24 @@ router.post('/add', auth, (req, res) => {
   });
 });
 
-router.get('/allreviews', async (req, res, next) => {
+router.get('/allreviews',auth, async (req, res, next) => {
   // const { user: { id } } = req;
   try {
-    const reviews= await Review.find();
+    const reviews= await Review.find({status:"Waiting Approval"});
+    res.status(200).json({
+      reviews
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+router.get('/allapproved', async (req, res, next) => {
+  // const { user: { id } } = req;
+  try {
+    const reviews= await Review.find({status:"Approved"});
     res.status(200).json({
       reviews
     });

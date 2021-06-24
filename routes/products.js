@@ -136,7 +136,7 @@ router.put('/:productId',auth,role.checkRole(role.ROLES.Admin, role.ROLES.Mercha
 router.get('/title/:product', async (req, res, next) => {
   const product = req.params.product;
   try {
-    const products = await Product.find({title: new RegExp(product,"m")}).exec();
+    const products = await Product.find({title: new RegExp(product,"i")}).exec();
     res.json(products);
   } catch (e) {
     next(e);
