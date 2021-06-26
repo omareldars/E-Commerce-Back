@@ -106,16 +106,31 @@ router.get('/:cartId', async (req, res) => {
 
 // delete cart
 router.delete('/delete/:cartId', auth, (req, res) => {
-  Cart.deleteOne({ _id: req.params.cartId }, (err) => {
-    if (err) {
-      return res.status(400).json({
-        error: 'Your request could not be processed. Please try again.',
+  const query = { _id: req.params.cartId };
+  Cart.updateOne(query, { $set: {products: [] }}, {multi:true} ).exec(err => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Your request could not be processed. Please try again.'
+        });
+      }
+      res.status(200).json({
+      
+        success: true
       });
-    }
-    res.status(200).json({
-      success: true,
-    });
+  // Cart.updateOne(query, { $pull: { products: [] } })
+    // console.log("from add to cart res--->",Cart);
   });
+
+  // Cart.deleteOne({ _id: req.params.cartId }, (err) => {
+  //   if (err) {
+  //     return res.status(400).json({
+  //       error: 'Your request could not be processed. Please try again.',
+  //     });
+  //   }
+  //   res.status(200).json({
+  //     success: true,
+  //   });
+  // });
 });
 
 
@@ -160,15 +175,15 @@ router.delete('/delete/:cartId/:productId', auth, (req, res) => {
 
 
 
-//get cart by id 
-router.get('/:cartId', async (req, res) => {
-  try {
-    const cart= await Cart.findById(req.params.cartId);
-    res.json(cart);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
+// //get cart by id 
+// router.get('/:cartId', async (req, res) => {
+//   try {
+//     const cart= await Cart.findById(req.params.cartId);
+//     res.json(cart);
+//   } catch (err) {
+//     res.json({ message: err });
+//   }
+// });
 
 
 
@@ -223,18 +238,18 @@ const decreaseQuantity = products => {
   Product.bulkWrite(bulkOptions);
 };
 
-router.get('/', async (req, res) => {
-  try {
-    const carts = await Cart.find({});
-    res.status(200).json({
-      carts
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
-    });
-  }
-});
+// router.get('/', async (req, res) => {
+//   try {
+//     const carts = await Cart.find({});
+//     res.status(200).json({
+//       carts
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       error: 'Your request could not be processed. Please try again.'
+//     });
+//   }
+// });
 
 
 module.exports = router;
