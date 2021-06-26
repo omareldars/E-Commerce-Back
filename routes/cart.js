@@ -49,6 +49,7 @@ router.post('/add/:cartId', auth, (req, res) => {
   const product = req.body.products;
   const query = { _id: req.params.cartId };
   console.log("ggggggggggggggggggggggggggggg",product);
+  
   Cart.updateOne(query, { $push: { products: product } }).exec(err => {
     if (err) {
       return res.status(400).json({
@@ -201,6 +202,58 @@ router.get('/', async (req, res) => {
   }
 });
 
+// increase quantity
+router.put('/increase/:cartId/:productId/:qty', async (req, res)=>{
+  try{
+    const cartId = req.params.cartId;
+    console.log("cart-id-->",req.params.cartId);
+    const productId = req.params.productId;
+    console.log("product-id-->",productId);
+    const qty = req.params.qty;
+    console.log("product-qty-->",qty);
+    Cart.updateOne({"_id":cartId, "products.product" : productId}, { $inc : { "products.$.quantity":qty } }).exec(err => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Cant Increase Qty from inside query.'
+        });
+      }
+      res.status(200).json({
+        success: true
+      });
+    });
+  } catch(e){
+    res.status(400).json({
+      error: 'Cant Increase Qty'
+    });
+  }
+});
+
+// decrease quantity
+router.put('/decrease/:cartId/:productId/:qty', async (req, res)=>{
+  try{
+    const cartId = req.params.cartId;
+    console.log("cart-id-->",req.params.cartId);
+    const productId = req.params.productId;
+    console.log("product-id-->",productId);
+    const qty = req.params.qty;
+    console.log("product-qty-->",qty);
+    Cart.updateOne({"_id":cartId, "products.product" : productId}, { $inc : { "products.$.quantity":-qty } }).exec(err => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Cant Increase Qty from inside query.'
+        });
+      }
+      res.status(200).json({
+        success: true
+      });
+    });
+  } catch(e){
+    res.status(400).json({
+      error: 'Cant Increase Qty'
+    });
+  }
+});
+
 
 
 
@@ -234,10 +287,23 @@ const decreaseQuantity = products => {
       }
     };
   });
-
   Product.bulkWrite(bulkOptions);
 };
 
+
+
+const increaseQuantity = products => {
+  let bulkOptions = products.map(item => {
+    return {
+      updateOne: {
+        filter: { _id: item.product },
+        update: { $inc: { quantity: item.quantity } }
+      }
+    };
+  });
+
+  Product.bulkWrite(bulkOptions);
+};
 // router.get('/', async (req, res) => {
 //   try {
 //     const carts = await Cart.find({});
