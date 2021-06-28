@@ -192,7 +192,7 @@ router.get('/allreviews',auth, async (req, res, next) => {
   }
 });
 
-router.get('/allapproved', async (req, res, next) => {
+router.get('/allapproved',auth, async (req, res, next) => {
   // const { user: { id } } = req;
   try {
     const reviews= await Review.find({status:"Approved"});
@@ -203,6 +203,16 @@ router.get('/allapproved', async (req, res, next) => {
     res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
+  }
+});
+
+//get review by productId 
+router.get('/product/:id', auth,async (req, res) => {
+  try {
+    const reviews = await Review.find({product: req.params.id});
+    res.json(reviews);
+  } catch (err) {
+    res.json({ message: err });
   }
 });
 
@@ -286,7 +296,7 @@ router.put('/reject/:reviewId', auth, async (req, res) => {
   }
 });
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id',auth, (req, res) => {
   Review.deleteOne({ _id: req.params.id }, (err, data) => {
     if (err) {
       return res.status(400).json({
