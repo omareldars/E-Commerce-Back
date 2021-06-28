@@ -274,7 +274,7 @@ const createMerchantUser = async (email, name, merchant, host) => {
 //
 //
 // approve merchant
-router.patch('/approve/:merchantId', auth, role.checkRole(role.ROLES.Admin),async (req, res) => {
+router.put('/approve/:merchantId', auth, role.checkRole(role.ROLES.Admin),async (req, res) => {
   try {
     const merchantId = req.params.merchantId;
     console.log("Id---->",merchantId);

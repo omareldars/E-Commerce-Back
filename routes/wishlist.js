@@ -78,9 +78,7 @@ router.get('/', auth, async (req, res) => {
     });
   }
 
-  if (err) {
-    console.log(err);
-  }
+  
 });
 //delete wishlist
 router.delete('/unlike/:id', auth, async (req, res) => {

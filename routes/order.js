@@ -1,35 +1,3 @@
-// const ordersController = require('../controllers/ordersController')
-// const express = require('express')
-// const orderRouter = express.Router();
-// const Order = require ('../models/Order')
-
-
-
-// orderRouter.get('/', auth,async function (req,res,next){
-//     await ordersController.getAll(req,res);
-// })
-
-// orderRouter.post('/',auth, async function (req,res,next){
-//     await ordersController.createOrder(req,res);
-// })
-
-// orderRouter.get('/:id',auth,async function(req,res,next){
-//     await ordersController.getById(req,res);
-// })
-// orderRouter.get('edit/:id',auth, async function(req,res){
-    
-//     await ordersController.getByIdAndUpdate(req,res);
-// })
-
-
-// orderRouter.delete('delete/:id',auth, async function(req,res){
-//     try{
-//         await ordersController.deleteorder(id);
-//         res.send("Delete done ");
-//     } catch (e) {
-//       next(e);
-//     }
-//     })
 
 
 // module.exports = orderRouter;

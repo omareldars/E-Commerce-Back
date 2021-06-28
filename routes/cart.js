@@ -243,8 +243,8 @@ router.put('/decrease/:cartId/:productId/:qty', async (req, res)=>{
           error: 'Cant Increase Qty from inside query.'
         });
       }
-      res.status(200).json({
-        success: true
+        res.status(200).json({
+          success: true
       });
     });
   } catch(e){
