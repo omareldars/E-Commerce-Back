@@ -39,7 +39,11 @@ const userSchema = Schema({
         maxLength: 140,
         required: true
     },
-
+    address:{
+      type: String,
+      maxLength: 300,
+      required: true
+    },
     country:{
         type: String,
         maxLength: 140,

@@ -10,6 +10,7 @@ const productsRouter = require('./routes/products');
 const reviewRouter = require('./routes/review');
 const contactRouter = require('./routes/contact');
 const wishlistRouter = require('./routes/wishlist');
+var stripe = require('stripe')('sk_test_51J5s3JGD6Ss3xWkUqqQpk99byqwM1xwXZT2wJy4Kim9gAhRP4Z7nPlMQQMQYIv4a0IzSaxyFuA6PS4KmZz1P6Jxi00iBHjUzV5');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,7 +29,7 @@ app.use('/image', express.static('image'));
 
 // const app = express();
 mongoose
-  .connect('mongodb://localhost:27017/angular', { useUnifiedTopology: true })
+  .connect('mongodb://localhost:27017/ecommerce', { useUnifiedTopology: true })
   .then(() => {
     console.log('connect mongodb successfully');
   })
@@ -76,6 +77,30 @@ app.use('/cart', cartRouter);
 app.use('/review', reviewRouter);
 app.use('/contact', contactRouter);
 app.use('/wishlist', wishlistRouter);
+
+
+//stripe
+app.post('/payme', (req, res) => {
+  console.log('The body is ', req.body);
+  var charge = stripe.charges.create(
+    {
+      amount: 230000,
+      currency: 'gbp',
+      source: req.body.token,
+    },
+    (err, charge) => {
+      if (err) {
+        throw err;
+      }
+      res.json({
+        success: true,
+        message: 'Payment Done',
+      });
+    }
+  );
+});
+
+
 
 app.get('/', function (req, res) {
   res.send('Hello World !!!!!');
