@@ -19,11 +19,11 @@ app.use(express.json());
 app.use(express.urlencoded());
 // app.use(cors());
 
-const corsOptions = {
-  origin: 'http://localhost:4200',
-  optionsSuccessStatus: 200,
-  credentials: true,
-};
+const corsOptions = [
+  {origin: 'http://localhost:4200', optionsSuccessStatus: 200, credentials: true,},
+  {origin: 'http://0.0.0.0:4200', optionsSuccessStatus: 200, credentials: true,},
+  {origin: 'http://127.0.0.1:4200', optionsSuccessStatus: 200, credentials: true,},
+];
 app.use(cors(corsOptions));
 app.use('/image', express.static('image'));
 

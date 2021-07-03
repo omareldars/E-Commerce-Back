@@ -1,7 +1,9 @@
- const express = require('express');
- const Cart = require('../models/Cart');
+const express = require('express');
+const Cart = require('../models/Cart');
 const role = require('../middlewares/role');
+const adminAuth = require('../middlewares/admin');
 const userModel = require('../models/User');
+const path = require('path');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -32,40 +34,45 @@ const auth = require('../middlewares/auth');
 const router = express.Router();
 
 
-router.post('/register', async (req, res, next) => {
-  const { body } = req;
-  console.log("hhhhhhhhhhhhhh",body);
-  try {
-    const user = await create(body);
-    // res.json(user);
-    // res.status(200).redirect( 'http://localhost:3000/cart/add')
-    // const products = req.body.products;
-
-    // const { body ,} = req;
-    // lets give it a try at first
-    // const { user: { id },} = req;
+router.post('/register', (req, res, next) => {
+  const upload = multer({ storage: storage }).single('avatar');
+  upload(req, res, function (err){
+    const { body } = req;
+    if (req.file != undefined) body.avatar = req.file.path;
+    const user = create(body);
     const cart = new Cart({ user: user.id,});
-    // console.log("body---->",body);
-    // console.log("req.body--->",req.body.products);
-    // console.log("cart--->",cart);
     cart.save((err, data) => {
       if (err) {
         return res.status(400).json({
           error: 'Your request could not be processed. Please try again.',
         });
       }
-      // if (products){
-      // decreaseQuantity(products);
-      // }
       res.status(200).json({
         success: true,
         message: "User and his cart created successfully.",
         cartId: data.id,
       });
     });
-  } catch (e) {
-    next(e);
-  }
+
+  });
+  // try {
+  //   const user = create(body);
+  //   const cart = new Cart({ user: user.id,});
+  //   cart.save((err, data) => {
+  //     if (err) {
+  //       return res.status(400).json({
+  //         error: 'Your request could not be processed. Please try again.',
+  //       });
+  //     }
+  //     res.status(200).json({
+  //       success: true,
+  //       message: "User and his cart created successfully.",
+  //       cartId: data.id,
+  //     });
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 });
 
 router.post('/login', async (req, res, next) => {
@@ -103,14 +110,12 @@ router.get('/me', auth, async (req, res, next) => {
     const city = users.city;
     const country = users.country;
     const address = users.address;
-  
     const avatar = users.avatar;
-   
     const created = users.created;
     const __v = users.__v;
     const token = users.token;
     const myuser = {merchant, role, _id, fname, lname, username, email,phone, city , country ,address, avatar, created, __v, token};
-    console.log("myuse : ",myuser);
+    // console.log("myuse : ",myuser);
 
     res.json(myuser);
   } catch (e) {
