@@ -36,10 +36,11 @@ const router = express.Router();
 
 router.post('/register', (req, res, next) => {
   const upload = multer({ storage: storage }).single('avatar');
-  upload(req, res, function (err){
+  upload(req, res, async function (err){
     const { body } = req;
     if (req.file != undefined) body.avatar = req.file.path;
-    const user = create(body);
+    const user = await create(body);
+    console.log("user : ---> ",user);
     const cart = new Cart({ user: user.id,});
     cart.save((err, data) => {
       if (err) {
@@ -53,8 +54,8 @@ router.post('/register', (req, res, next) => {
         cartId: data.id,
       });
     });
-
   });
+  
   // try {
   //   const user = create(body);
   //   const cart = new Cart({ user: user.id,});
