@@ -1,5 +1,5 @@
 const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey("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")
+sgMail.setApiKey("PUT YOUR API KEY HERE")
 const msg = {
   to: 'omar.a.eldars@gmail.com', // Change to your recipient
   from: 'english.iti41@gmail.com', // Change to your verified sender
