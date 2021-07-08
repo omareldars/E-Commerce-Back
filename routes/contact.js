@@ -6,8 +6,7 @@ const Contact = require('../models/Contact');
 
 // email
 const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey("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");
-sgMail.setApiKey("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");
+sgMail.setApiKey("PUT YOUR API KEY HERE");
 
 router.post('/add', (req, res) => {
   const name = req.body.name;
