@@ -7,8 +7,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey("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")
-sgMail.setApiKey("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");
+sgMail.setApiKey("PUT YOUR API KEY HERE");
 const {create,} = require('../controllers/merchant');
 const auth = require('../middlewares/auth');
 const { ROLES } = require('../middlewares/role');
